@@ -1,0 +1,5 @@
+pt_BR:
+  site_settings:
+    animated_avatars_always_animate: "Manter avatares animados sempre em movimento"
+    animated_avatars_min_trust_level_to_display: "Nível mínimo de confiança necessário para visualizar avatares animados"
+    animated_avatars_allowed_groups: "Grupos que podem utilizar avatares animados"
