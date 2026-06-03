@@ -1,8 +1,9 @@
 # frozen_string_literal: true
-# name: discourse-animated-avatars
-# about: This plugin adds support for animated avatars
-# version: 0.1
-# url: https://github.com/discourse/discourse-animated-avatars
+
+# name: discourse-animated-avatars-plus
+# about: Adds support for animated avatars with group-based permission
+# version: 0.2
+# url: https://github.com/xhyeops/discourse-animated-avatars-plus
 
 after_initialize do
   require_relative "lib/discourse_animated_avatars/upload_creator_gifsicle_extension"
@@ -25,11 +26,9 @@ after_initialize do
         false
       end
 
-    # new crop functions if gifsicle is installed
     if gifsicle_installed
       UploadCreator.prepend(DiscourseAnimatedAvatars::UploadCreatorGifsicleExtension)
     else
-      # fallback if no gifsicle, no cropping for animated avatars
       UploadCreator.prepend(DiscourseAnimatedAvatars::UploadCreatorNoGifsicleExtension)
     end
 
@@ -37,9 +36,28 @@ after_initialize do
     UserAvatarsController.prepend(DiscourseAnimatedAvatars::UserAvatarsControllerExtension)
   end
 
+  add_to_class(:user, :can_use_animated_avatar?) do
+    allowed_groups =
+      SiteSetting.animated_avatars_allowed_groups
+        .to_s
+        .split("|")
+        .map(&:strip)
+        .reject(&:blank?)
+
+    return false if allowed_groups.empty?
+
+    groups.where(name: allowed_groups).exists?
+  rescue StandardError
+    false
+  end
+
   add_to_class(:user, :animated_avatar) do
-    pass_tl_check = staff? || trust_level >= SiteSetting.animated_avatars_min_trust_level_to_display
-    uploaded_avatar&.url if uploaded_avatar&.animated? && pass_tl_check
+    return nil unless uploaded_avatar&.animated?
+    return nil unless can_use_animated_avatar?
+
+    uploaded_avatar.url
+  rescue StandardError
+    nil
   end
 
   add_to_serializer(:basic_user, :animated_avatar) do
@@ -47,6 +65,7 @@ after_initialize do
   rescue StandardError
     nil
   end
+
   add_to_serializer(:post, :animated_avatar) do
     object.user.try(:animated_avatar)
   rescue StandardError
