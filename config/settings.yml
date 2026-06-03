@@ -3,6 +3,12 @@ trust:
     default: 3
     enum: "TrustLevelSetting"
     client: true
+
   animated_avatars_always_animate:
     default: false
+    client: true
+
+  animated_avatars_allowed_groups:
+    default: "admins|moderators"
+    type: list
     client: true
