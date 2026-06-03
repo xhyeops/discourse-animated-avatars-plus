@@ -9,6 +9,6 @@ trust:
     client: true
 
   animated_avatars_allowed_groups:
-    default: "admins|moderators"
+    default: "admins,moderators"
     type: list
     client: true
