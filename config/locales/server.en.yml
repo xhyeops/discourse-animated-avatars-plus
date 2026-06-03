@@ -1,4 +1,5 @@
 en:
   site_settings:
     animated_avatars_always_animate: "Always animate avatars"
-    animated_avatars_min_trust_level_to_display: "Min trust level to display an animated avatar"
+    animated_avatars_min_trust_level_to_display: "Minimum trust level to display animated avatars"
+    animated_avatars_allowed_groups: "Groups allowed to use animated avatars"
