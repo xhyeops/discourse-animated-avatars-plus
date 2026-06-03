@@ -40,7 +40,7 @@ after_initialize do
     allowed_groups =
       SiteSetting.animated_avatars_allowed_groups
         .to_s
-        .split("|")
+        .split(/[|,]/)
         .map(&:strip)
         .reject(&:blank?)
 
